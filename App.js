@@ -17,12 +17,13 @@ export default function App() {
         setMovieCount(json.data.movie_count);
         getRandomMovie();
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
   }, []);
 
   const getRandomMovie = () => {
     var id = Math.floor(Math.random() * movieCount);
-                fetch('https://yts.mx/api/v2/movie_details.json?movie_id=' + id + "&with_images=true")
+                fetch("https://yts.mx/api/v2/movie_details.json?movie_id=" + id + "&with_images=true")
                 .then((response) => response.json())
                 .then((json) =>{
                   setRandomMovie(json.data.movie)
@@ -30,7 +31,7 @@ export default function App() {
                 })
                 .catch((error) => {
                   console.error(error)
-                  getRandomMovie();
+                  //getRandomMovie();
                 })
                 .finally(() => setLoading(false));
   } 
@@ -42,12 +43,12 @@ export default function App() {
       (<View> 
         <Text>titre : {randomMovie.title}</Text>       
         
-        <TouchableOpacity style={styles.button}
+        {/* <TouchableOpacity style={styles.button}
               onPress={() => {
                 getRandomMovie();
               }}>
                 <Text style={styles.textButton}><FontAwesomeIcon icon={faFilm} size={40} color={"black"} /></Text>
-          </TouchableOpacity> 
+          </TouchableOpacity>  */}
         </View>)}
     </View>
   );
