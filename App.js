@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { Linking, ScrollView, Dimensions, Image, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFilm } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
@@ -9,6 +9,8 @@ export default function App() {
   const [isLoading, setLoading] = useState(true);
   const [movieCount, setMovieCount] = useState(0);
   const [randomMovie, setRandomMovie] = useState([]);
+
+  const dimensions = Dimensions.get('window');
 
   useEffect(() => {
     if(movieCount == 0){
@@ -44,38 +46,73 @@ export default function App() {
   } 
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
        {isLoading ? <Text>Loading...</Text> :
 
-      (<View> 
-        <Image source={randomMovie.medium_cover_image}></Image>
-        <Text>titre : {randomMovie.title}</Text>       
-        
-        { <TouchableOpacity style={styles.button}
+      (<View style={styles.container}> 
+        <Image 
+        style={styles.image}
+        source={{uri : randomMovie.large_cover_image}}
+        onPress= { () => {
+          var torrent = randomMovie.torrents[0];
+          console.log(torrent);
+          Linking.openURL(torrent.url).catch(err => console.error("Couldn't load page", err));
+        }}/>
+        <ScrollView style={styles.scrollView}>
+        <Text style={styles.title}>{randomMovie.title}</Text>       
+          <Text style={styles.description}>{randomMovie.description_full}</Text>
+        </ScrollView>
+        <TouchableOpacity style={styles.button}
               onPress={() => {
                 getRandomMovie();
               }}>
                 <Text style={styles.textButton}><FontAwesomeIcon icon={faFilm} size={40} color={"black"} /></Text>
-          </TouchableOpacity>}
+          </TouchableOpacity>
         </View>)}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#1D1D1D',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  image : {
+    height: 390,
+    width: 260,
+    marginTop : 50
   },
   button : {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#68FF00",
-
+    backgroundColor: "#6AC045",
+    marginTop : 30,
     borderRadius:100,
     height: 75,
-    width: 75
+    width: 75,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30
   },
+  title : {
+    color : "#FFFFFF",
+    fontSize : 30,
+    margin : 10,
+    textAlign : 'center'
+  },
+  description : {
+    color : "#739191",
+    fontSize : 15,
+    margin : 10,
+    marginBottom : 120,
+    textAlign : 'center'
+  },
+  scrollView : {
+    height: 100,
+  }
 });
